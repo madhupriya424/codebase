@@ -1,16 +1,17 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import axios from 'axios';
 
 class Login extends Component {
-    
-    constructor(props){
+
+    constructor(props) {
         super(props);
         this.state = {
-            username : 'Molu',
-            password : 'ppp'
+            username: 'Molu',
+            password: 'ppp'
         };
 
         this.onChangeUsername = this.onChangeUsername.bind(this);
@@ -18,32 +19,66 @@ class Login extends Component {
         this.onSubmit = this.onSubmit.bind(this);
     }
 
-    onChangeUsername(event){
-        this.setState({username: event.target.value});
-        //console.log(event.target.value);
+    onChangeUsername(event, newValue) {
+        this.setState({ username: newValue });
+       // console.log(event);
+
     }
 
-    onChangePassword(event){  
-        this.setState({password: event.target.value}); 
+    onChangePassword(event, newValue) {
+        this.setState({ password: newValue});
     }
 
-    onSubmit(event){
+    onSubmit(event) {
+        let baseUrl = "http://localhost:4000";
+        let payload={
+            "username":this.state.username,
+            "password":this.state.password
+            }
+        axios.post(baseUrl+'/login', payload) 
+        .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+          .then(function () {
+            // always executed
+          });   
         console.log(this.state.username, this.state.password);
     }
 
-    render(){
+    render() {
         return (
             <div>
-                Username:
-                <input type="text" value={this.state.username} onChange={this.onChangeUsername}/>
-                <br />
-                Password: 
-                <input type="text"  value={this.state.password} onChange={this.onChangePassword}/>
-                <br />
-                <button type="submit" onClick={this.onSubmit}> Submit </button>
-            </div>
+                <MuiThemeProvider>
+                    <div>
+                        <AppBar
+                            title="Login"
+                        />
+                        <TextField
+                            hintText="Enter your Username"
+                            floatingLabelText="Username"
+                            onChange={this.onChangeUsername}
+                        />
+                        <br />
+                        <TextField
+                            type="password"
+                            hintText="Enter your Password"
+                            floatingLabelText="Password"
+                            onChange={this.onChangePassword}
+                        />
+                        <br />
+                        <RaisedButton label="Submit" primary={true} style={style} onClick={this.onSubmit} />
+                    </div>
+                </MuiThemeProvider>
+            </div >
         );
     }
 }
+
+const style = {
+    margin: 15,
+   };
 
 export default Login;
